@@ -30,9 +30,8 @@ const UsuariosSchema = mongoose.Schema({
         trim: true
     },
     direccion: {
-        type:mongoose.Schema.Types.ObjectId,
-        required: false,
-        ref: "Direccion"
+        type:Array,
+        required: false
     },
     fechaAlta: {
         type: Date,

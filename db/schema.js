@@ -22,6 +22,7 @@ const typeDefs = gql `
         uso: String
         marca: String
         imagen: [Imagenes]
+        oferta: Float
     }
     input ProductoInput {
         nombre: String!
@@ -30,10 +31,11 @@ const typeDefs = gql `
         familia: familiaProducto!
         categoria: ID!
         departamento: String!
-        talla: Int!
+        talla: Int
         uso: String!
         marca:String!
         imagen: [ImagenesInput]
+        oferta: Float
     }
     type Imagenes{
         nombre:String              
@@ -90,7 +92,8 @@ const typeDefs = gql `
         apellido : String!
         email: String!
         password: String!
-        direccion : DireccionInput      
+        direccion : DireccionInput,
+        telefono:String!    
     }    
     type Direccion {
         id : ID
@@ -114,10 +117,10 @@ const typeDefs = gql `
         id: ID
         pedido : [PedidoGrupo]
         total : Float
-        cliente : ID
-        vendedor : ID
+        cliente : ID        
         estado : EstadoPedido
         creado : String
+        pago: ID
     }
     type PedidoGrupo {
         id: ID!
@@ -129,10 +132,10 @@ const typeDefs = gql `
     }
     input PedidoInput {
         pedido: [PedidoProductoInput]
-        total : Float
-        cliente : ID
-        estado : EstadoPedido!        
-    }    
+        total : Float        
+        estado : EstadoPedido!
+        pago: ID     
+    }
     enum EstadoPedido {
         PENDIENTE
         COMPLETADO
@@ -151,6 +154,10 @@ const typeDefs = gql `
         obtenerProductosMultiple(input : ProductoFiltros) : [Producto]
         #Categorias
         obtenerCategorias:[Categoria]
+
+        #Pedidos
+        obtenerPedidos:[Pedido]
+        obtenerPedidosCliente:[Pedido]
     }
     type Mutation {
         # Usuarios

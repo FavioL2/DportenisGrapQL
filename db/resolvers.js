@@ -70,15 +70,27 @@ const resolvers = {
             } catch (error) {
                 console.log(error)
             }            
+        },
+        obtenerPedidos: async (_)=>{
+            try {
+                pedidos = await Pedido.find();
+                return pedidos;
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        obtenerPedidosCliente: async (_,{},ctx)=>{
+            try {
+                pedidos = await Pedido.find({cliente: ctx.id });
+                return pedidos;
+            } catch (error) {
+                console.log(error)
+            } 
         }
     },
     Mutation : {
         nuevoUsuario: async(_, { input }) => {            
-            try {
-                const { email, password } = input;    
-            } catch (error) {
-                console.log(input)
-            }            
+            const { email, password } = input;
             //Revisar si usuario ya ha sido registrado
             const existeU = await Usuario.findOne({ email })
             if (existeU) {
@@ -147,28 +159,20 @@ const resolvers = {
             return "El producto se ha eliminado con éxito";
         },
         nuevoPedido: async(_, { input }, ctx) => {
-            const { cliente, pedido } = input
-
-            const clienteEx = await Cliente.findById(cliente)
-            if (!clienteEx) {
-                throw new Error("El cliente no existe");
-            }
-            if (clienteEx.vendedor.toString() != ctx.id) {
-                throw new Error("No tienes las credenciales")
-            }
+            const { pedido } = input            
             for await (const item of pedido) {
                 const producto = await Producto.findById(item.id)
-                if (producto.existencia >= item.cantidad) {
-                    producto.existencia = producto.existencia - item.cantidad
+                if (producto.existencia >= item.cantidad) { // verificamos si se puede vender esa cantidad verificando el inventario
+                    producto.existencia = producto.existencia - item.cantidad //en caso de tener suficiantes, se actualiza la existencia
                     producto.save()
                         // nuevoItem = await Producto.findOneAndUpdate({ _id: item.id }, producto, { new: true });
                 } else {
                     throw new Error(`El artículo: ${producto.nombre} excede la cantidad (${producto.existencia}) disponible`)
                 }
             }
-            crearPedido = await new Pedido(input)
-            crearPedido.vendedor = ctx.id
-            return crearPedido.save()
+            crearPedido = await new Pedido(input)            
+            crearPedido.cliente = ctx.id
+            return crearPedido.save() //guardamos el pedido
         },
         ActualizarPedido: async(_, { id, input }, ctx) => {
             const { cliente } = input;

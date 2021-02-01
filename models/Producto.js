@@ -13,7 +13,7 @@ const ProductoSchema = mongoose.Schema({
     },
     talla: {
         type: Number,
-        required: true,
+        required: false,
         trim: true
     },
     existencia: {
@@ -42,6 +42,11 @@ const ProductoSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Categoria"
+    },
+    imagen:{
+        type:Array,
+        required: true,
+        trim: true
     }
 });
 module.exports = mongoose.model("Producto",ProductoSchema );

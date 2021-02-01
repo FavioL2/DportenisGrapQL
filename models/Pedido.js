@@ -11,7 +11,7 @@ const PedidoSchema = mongoose.Schema({
     },
     cliente:{
         type:mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: false,
         ref: 'Usuario'
     },
     estado:{
